@@ -176,7 +176,13 @@ def service_top_rank(selected_opsi: str, year: list, month=None):
 
 def daily_trend(year: list, month: str, selected_opsi: str):
     daily_trend = df[df["Tahun"].isin(year)]
-    daily_trend = daily_trend.loc[daily_trend["Bulan"]==month]
+    if  month.lower() == "Idul Fitri".lower():
+        daily_trend = daily_trend[
+            ((daily_trend['Tanggal'] >= '4/2/2022') & (daily_trend['Tanggal'] <= '5/8/2022')) |
+            ((daily_trend['Tanggal'] >= '3/22/2023') & (daily_trend['Tanggal'] <= '4/28/2023'))
+        ]
+    else:
+        daily_trend = daily_trend.loc[daily_trend["Bulan"]==month]
     if selected_opsi == "Pendapatan":
         service_totals = daily_trend.groupby("Nama Service")["Harga"].sum().reset_index()
         top_services = service_totals.nlargest(9, "Harga")["Nama Service"].tolist()
@@ -212,7 +218,13 @@ def daily_trend(year: list, month: str, selected_opsi: str):
 def plot_days_trend(options_viz: str, month=None):
     days_dist = df.copy()
     days_dist['Tahun'] = days_dist['Tahun'].astype(str)
-    days_dist = days_dist.loc[days_dist["Bulan"]==month]
+    if  month.lower() == "Idul Fitri".lower():
+        days_dist = days_dist[
+            ((days_dist['Tanggal'] >= '4/2/2022') & (days_dist['Tanggal'] <= '5/8/2022')) |
+            ((days_dist['Tanggal'] >= '3/22/2023') & (days_dist['Tanggal'] <= '4/28/2023'))
+        ]
+    else:
+        days_dist = days_dist.loc[days_dist["Bulan"]==month]
     grouped_data = days_dist.groupby(["Hari", "Tahun"]).agg({
         "Harga": ["count", "sum"]
     }).reset_index()
@@ -239,8 +251,14 @@ def plot_days_trend(options_viz: str, month=None):
 
 def info_month(month, selected_opsi):
     info_month = df.copy()
+    if  month.lower() == "Idul Fitri".lower():
+        info_month = info_month[
+            ((info_month['Tanggal'] >= '4/2/2022') & (info_month['Tanggal'] <= '5/1/2022')) |
+            ((info_month['Tanggal'] >= '3/22/2023') & (info_month['Tanggal'] <= '4/21/2023'))
+        ]
+    else:
+        info_month = info_month.loc[info_month["Bulan"]==month]
     info_month['Tahun'] = info_month['Tahun'].astype(str)
-    info_month = info_month.loc[info_month["Bulan"]==month]
     grouped_data = info_month.groupby(["Hari", "Tahun"]).agg({
         "Harga": ["count", "sum"]
     }).reset_index()
@@ -252,6 +270,7 @@ def info_month(month, selected_opsi):
     grouped_data_service = info_month.groupby(["Nama Service", "Tahun"]).agg({
         "Harga": ["count", "sum"]
     }).reset_index()
+    
     grouped_data_service.columns = ["Nama Service", "Tahun", "Jumlah_Kedatangan", "Total_Pendapatan"]
     grouped_data_service["Total_Pendapatan"] = grouped_data_service["Total_Pendapatan"] / 1000000
     if selected_opsi == "Pendapatan":
@@ -260,6 +279,7 @@ def info_month(month, selected_opsi):
         options_selected = "Jumlah_Kedatangan"
     grouped_data_service = grouped_data_service.sort_values(options_selected, ascending=False, ignore_index=True)
     row1 = st.columns(4)
+
     total_pendapatan_month = round(grouped_data[grouped_data["Tahun"]=="2023"]["Total_Pendapatan"].sum(),1)
     total_pendapatan_month_22 = round(grouped_data[grouped_data["Tahun"]=="2022"]["Total_Pendapatan"].sum(),1)
     jumlah_kedatangan_month = round(grouped_data[grouped_data["Tahun"]=="2023"]["Jumlah_Kedatangan"].sum(),1)
