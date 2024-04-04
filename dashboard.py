@@ -75,7 +75,7 @@ def main_info(selected_months: list):
     sp_22 = int(service_pendapatan_tahun_2022.iloc[0]['Harga'])
     sk_23 = int(service_diminati_tahun_2023_sorted.iloc[0]['Harga'])
     sk_22 = int(service_diminati_tahun_2022.iloc[0]['Harga'])
-    st.subheader("Total Tahun 2023")
+    st.subheader("Total Year 2023")
     st.metric("Pendapatan", f"{tp_23:,} (IDR)", f"{(tp_23-tp_22):,} (IDR)")
     st.metric("Kedatangan", f"{tk_23} (Pendatang)", f"{tk_23-tk_22} (Pendatang)")
     st.metric(f"Pendapatan Service Tertinggi ({p_nama_service_tertinggi_2023})", f"{sp_23:,} (IDR)", f"{(sp_23-sp_22):,} (IDR)")
