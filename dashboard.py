@@ -6,7 +6,7 @@ from assets.css import *
 
 # Set Streamlit page configuration
 st.set_page_config(
-    page_title="Report Dashboard",
+    page_title="Mellysa Salon Dashboard",
     page_icon="🧊",
     layout="wide",
     initial_sidebar_state="expanded",
