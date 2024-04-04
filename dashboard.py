@@ -198,7 +198,7 @@ def daily_trend(year: list, month: str, selected_opsi: str):
         x="Nomor Hari",
         y="Harga",
         color="Nama Service",
-        title=f"Grafik {selected_opsi} Harian Tahun 2023",
+        title=f"Image {selected_opsi} Daily Year 2023",
         labels={"Nomor Hari": "Tanggal", "Harga": "Pendapatan"},
     )
     total_per_day = daily_trend_grouped.groupby("Nomor Hari")["Harga"].sum().reset_index()
@@ -241,7 +241,7 @@ def plot_days_trend(options_viz: str, month=None):
         grouped_data,
         x='Hari',
         y=viz_text,
-        title=f'Perbandingan {options_viz} tahun 2022 vs 2023',
+        title=f'comparison {options_viz} 2022 vs 2023',
         color="Tahun",
         barmode="group",
         text=viz_text)
