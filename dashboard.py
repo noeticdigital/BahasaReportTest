@@ -145,7 +145,7 @@ def service_top_rank(selected_opsi: str, year: list, month=None):
     #top_rank = top_rank.loc[:]
     grouped_data['Total_Pendapatan'] = grouped_data['Total_Pendapatan'].astype(float)
     pendapatan_max = grouped_data["Total_Pendapatan"].max()
-    st.markdown("##### Layanan Teratas")
+    st.markdown("##### Top Service")
     st.dataframe(
         grouped_data,
         column_config={
