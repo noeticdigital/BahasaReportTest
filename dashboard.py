@@ -47,35 +47,35 @@ df = load_data("./dataset/dataset_cleaned.csv")
 
 def main_info(selected_months: list):
     month_filtered = df[df["Bulan"].isin(selected_months)]
-    total_pendapatan_tahunan = month_filtered.groupby('Tahun')["Harga"].sum().reset_index()
-    total_kedatangan_tahunan = month_filtered.groupby('Tahun')["Harga"].count().reset_index()
-    tp_23 = int(total_pendapatan_tahunan[total_pendapatan_tahunan["Tahun"]==2023]["Harga"].values[0])
-    tp_22 = int(total_pendapatan_tahunan[total_pendapatan_tahunan["Tahun"]==2022]["Harga"].values[0])
-    tk_23 = int(total_kedatangan_tahunan[total_kedatangan_tahunan["Tahun"]==2023]["Harga"].values[0])
-    tk_22 = int(total_kedatangan_tahunan[total_kedatangan_tahunan["Tahun"]==2022]["Harga"].values[0])
+    total_pendapatan_yearan = month_filtered.groupby('year')["Harga"].sum().reset_index()
+    total_kedatangan_yearan = month_filtered.groupby('year')["Harga"].count().reset_index()
+    tp_23 = int(total_pendapatan_yearan[total_pendapatan_yearan["year"]==2023]["Harga"].values[0])
+    tp_22 = int(total_pendapatan_yearan[total_pendapatan_yearan["year"]==2022]["Harga"].values[0])
+    tk_23 = int(total_kedatangan_yearan[total_kedatangan_yearan["year"]==2023]["Harga"].values[0])
+    tk_22 = int(total_kedatangan_yearan[total_kedatangan_yearan["year"]==2022]["Harga"].values[0])
 
-    service_pendapatan_tahunan = month_filtered.groupby(['Nama Service', 'Tahun'])["Harga"].sum().reset_index()
-    service_pendapatan_tahun_2023 = service_pendapatan_tahunan[service_pendapatan_tahunan['Tahun'] == 2023]
-    service_pendapatan_tahun_2023_sorted = service_pendapatan_tahun_2023.sort_values(by='Harga', ascending=False)
-    p_nama_service_tertinggi_2023 = service_pendapatan_tahun_2023_sorted.iloc[0]['Nama Service']
-    service_pendapatan_tahun_2022 = service_pendapatan_tahunan[
-        (service_pendapatan_tahunan['Tahun'] == 2022) &
-        (service_pendapatan_tahunan['Nama Service'] == p_nama_service_tertinggi_2023)
+    service_pendapatan_yearan = month_filtered.groupby(['Nama Service', 'year'])["Harga"].sum().reset_index()
+    service_pendapatan_year_2023 = service_pendapatan_yearan[service_pendapatan_yearan['year'] == 2023]
+    service_pendapatan_year_2023_sorted = service_pendapatan_year_2023.sort_values(by='Harga', ascending=False)
+    p_nama_service_tertinggi_2023 = service_pendapatan_year_2023_sorted.iloc[0]['Nama Service']
+    service_pendapatan_year_2022 = service_pendapatan_yearan[
+        (service_pendapatan_yearan['year'] == 2022) &
+        (service_pendapatan_yearan['Nama Service'] == p_nama_service_tertinggi_2023)
     ]
-    service_diminati_tahunan = month_filtered.groupby(['Nama Service', 'Tahun'])["Harga"].count().reset_index()
-    service_diminati_tahun_2023 = service_diminati_tahunan[service_diminati_tahunan['Tahun'] == 2023]
-    service_diminati_tahun_2023_sorted = service_diminati_tahun_2023.sort_values(by='Harga', ascending=False)
-    k_nama_service_tertinggi_2023 = service_diminati_tahun_2023_sorted.iloc[0]['Nama Service']
-    service_diminati_tahun_2022 = service_diminati_tahunan[
-        (service_diminati_tahunan['Tahun'] == 2022) &
-        (service_diminati_tahunan['Nama Service'] == k_nama_service_tertinggi_2023)
+    service_diminati_yearan = month_filtered.groupby(['Nama Service', 'year'])["Harga"].count().reset_index()
+    service_diminati_year_2023 = service_diminati_yearan[service_diminati_yearan['year'] == 2023]
+    service_diminati_year_2023_sorted = service_diminati_year_2023.sort_values(by='Harga', ascending=False)
+    k_nama_service_tertinggi_2023 = service_diminati_year_2023_sorted.iloc[0]['Nama Service']
+    service_diminati_year_2022 = service_diminati_yearan[
+        (service_diminati_yearan['year'] == 2022) &
+        (service_diminati_yearan['Nama Service'] == k_nama_service_tertinggi_2023)
     ]
 
-    sp_23 = int(service_pendapatan_tahun_2023_sorted.iloc[0]['Harga'])
-    sp_22 = int(service_pendapatan_tahun_2022.iloc[0]['Harga'])
-    sk_23 = int(service_diminati_tahun_2023_sorted.iloc[0]['Harga'])
-    sk_22 = int(service_diminati_tahun_2022.iloc[0]['Harga'])
-    st.subheader("Total Tahun 2023")
+    sp_23 = int(service_pendapatan_year_2023_sorted.iloc[0]['Harga'])
+    sp_22 = int(service_pendapatan_year_2022.iloc[0]['Harga'])
+    sk_23 = int(service_diminati_year_2023_sorted.iloc[0]['Harga'])
+    sk_22 = int(service_diminati_year_2022.iloc[0]['Harga'])
+    st.subheader("Total year 2023")
     st.metric("Pendapatan", f"{tp_23:,} (IDR)", f"{(tp_23-tp_22):,} (IDR)")
     st.metric("Kedatangan", f"{tk_23} (Pendatang)", f"{tk_23-tk_22} (Pendatang)")
     st.metric(f"Pendapatan Service Tertinggi ({p_nama_service_tertinggi_2023})", f"{sp_23:,} (IDR)", f"{(sp_23-sp_22):,} (IDR)")
@@ -87,16 +87,16 @@ def daily_year_trend(selected_months: list, selected_opsi):
     elif selected_opsi == "Total_Pendapatan":
         title_ops = "Pendapatan"
     month_filtered = df[df["Bulan"].isin(selected_months)]
-    grouped_data = month_filtered.groupby(["Hari", "Tahun"]).agg({
+    grouped_data = month_filtered.groupby(["Hari", "year"]).agg({
         "Harga": ["count", "sum"]
     }).reset_index()
     # Rename the columns for clarity
-    grouped_data.columns = ["Hari", "Tahun", "Jumlah_Kedatangan", "Total_Pendapatan"]
+    grouped_data.columns = ["Hari", "year", "Jumlah_Kedatangan", "Total_Pendapatan"]
     grouped_data['Hari'] = pd.Categorical(grouped_data['Hari'], categories=all_day, ordered=True)
     grouped_data = grouped_data.sort_values('Hari')
-    grouped_data['Tahun'] = grouped_data['Tahun'].astype(str)
+    grouped_data['year'] = grouped_data['year'].astype(str)
 
-    fig = px.bar(grouped_data, x='Hari', y=selected_opsi, color="Tahun", orientation='v', text=selected_opsi, barmode="group",
+    fig = px.bar(grouped_data, x='Hari', y=selected_opsi, color="year", orientation='v', text=selected_opsi, barmode="group",
                 labels={'Jumlah_Kedatangan': 'Jumlah Kedatangan'})
 
     # Menambahkan judul dan mengatur layout
@@ -109,31 +109,31 @@ def plot_trend_year(year: list,selected_months: list, selected_opsi):
         title_ops = "Kedatangan"
     elif selected_opsi == "Total_Pendapatan":
         title_ops = "Pendapatan"
-    year_filtered = df[df["Tahun"].isin(year)]
+    year_filtered = df[df["year"].isin(year)]
     month_filtered = year_filtered[year_filtered["Bulan"].isin(selected_months)]
     if selected_opsi == "Total_Pendapatan":
-        sales_data = month_filtered.groupby(['Tahun', 'Bulan'])['Harga'].sum().reset_index()
+        sales_data = month_filtered.groupby(['year', 'Bulan'])['Harga'].sum().reset_index()
     elif selected_opsi == "Jumlah_Kedatangan":
-        sales_data = month_filtered.groupby(['Tahun', 'Bulan'])['Harga'].count().reset_index()
+        sales_data = month_filtered.groupby(['year', 'Bulan'])['Harga'].count().reset_index()
     sales_data['Bulan'] = pd.Categorical(sales_data['Bulan'], categories=all_month, ordered=True)
     sales_data = sales_data.sort_values('Bulan')
-    sales_data.columns = ['Tahun', 'Bulan', 'Pendapatan']
+    sales_data.columns = ['year', 'Bulan', 'Pendapatan']
     fig = px.line(
         sales_data,
         x="Bulan",
         y="Pendapatan",
-        color="Tahun",
+        color="year",
         markers=True,
         text="Pendapatan",
-        title=f"Trend {title_ops} Dalam Setahun"
+        title=f"Trend {title_ops} Dalam Seyear"
     )
     fig.update_traces(textposition="top center")
-    fig.update_layout(legend=dict(title=dict(text="Tahun"), orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1), height=420)
+    fig.update_layout(legend=dict(title=dict(text="year"), orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1), height=420)
 
     st.plotly_chart(fig, use_container_width=True)
 
 def service_top_rank(selected_opsi: str, year: list, month=None):
-    top_rank = df[df["Tahun"].isin(year)]
+    top_rank = df[df["year"].isin(year)]
     if month != None:
         top_rank = top_rank[top_rank["Bulan"].isin(month)]
     grouped_data = top_rank.groupby("Nama Service").agg({
@@ -175,7 +175,7 @@ def service_top_rank(selected_opsi: str, year: list, month=None):
     )
 
 def daily_trend(year: list, month: str, selected_opsi: str):
-    daily_trend = df[df["Tahun"].isin(year)]
+    daily_trend = df[df["year"].isin(year)]
     if  month.lower() == "Idul Fitri".lower():
         daily_trend = daily_trend[
             ((daily_trend['Tanggal'] >= '4/2/2022') & (daily_trend['Tanggal'] <= '5/8/2022')) |
@@ -198,7 +198,7 @@ def daily_trend(year: list, month: str, selected_opsi: str):
         x="Nomor Hari",
         y="Harga",
         color="Nama Service",
-        title=f"Grafik {selected_opsi} Harian Tahun 2023",
+        title=f"Grafik {selected_opsi} Harian year 2023",
         labels={"Nomor Hari": "Tanggal", "Harga": "Pendapatan"},
     )
     total_per_day = daily_trend_grouped.groupby("Nomor Hari")["Harga"].sum().reset_index()
@@ -217,7 +217,7 @@ def daily_trend(year: list, month: str, selected_opsi: str):
 
 def plot_days_trend(options_viz: str, month=None):
     days_dist = df.copy()
-    days_dist['Tahun'] = days_dist['Tahun'].astype(str)
+    days_dist['year'] = days_dist['year'].astype(str)
     if  month.lower() == "Idul Fitri".lower():
         days_dist = days_dist[
             ((days_dist['Tanggal'] >= '4/2/2022') & (days_dist['Tanggal'] <= '5/8/2022')) |
@@ -225,11 +225,11 @@ def plot_days_trend(options_viz: str, month=None):
         ]
     else:
         days_dist = days_dist.loc[days_dist["Bulan"]==month]
-    grouped_data = days_dist.groupby(["Hari", "Tahun"]).agg({
+    grouped_data = days_dist.groupby(["Hari", "year"]).agg({
         "Harga": ["count", "sum"]
     }).reset_index()
     # Rename the columns for clarity
-    grouped_data.columns = ["Hari", "Tahun", "Jumlah_Kedatangan", "Total_Pendapatan"]
+    grouped_data.columns = ["Hari", "year", "Jumlah_Kedatangan", "Total_Pendapatan"]
     grouped_data["Total_Pendapatan"] = grouped_data["Total_Pendapatan"] / 1000
     grouped_data['Hari'] = pd.Categorical(grouped_data['Hari'], categories=all_day, ordered=True)
     grouped_data = grouped_data.sort_values('Hari')
@@ -241,12 +241,12 @@ def plot_days_trend(options_viz: str, month=None):
         grouped_data,
         x='Hari',
         y=viz_text,
-        title=f'Perbandingan {options_viz} tahun 2022 vs 2023',
-        color="Tahun",
+        title=f'Perbandingan {options_viz} year 2022 vs 2023',
+        color="year",
         barmode="group",
         text=viz_text)
     fig.update_layout(
-        legend=dict(title=dict(text="Tahun"), orientation="h", yanchor="bottom", y=1.1, xanchor="right", x=1))
+        legend=dict(title=dict(text="year"), orientation="h", yanchor="bottom", y=1.1, xanchor="right", x=1))
     st.plotly_chart(fig, use_container_width=True)
 
 def info_month(month, selected_opsi):
@@ -258,20 +258,20 @@ def info_month(month, selected_opsi):
         ]
     else:
         info_month = info_month.loc[info_month["Bulan"]==month]
-    info_month['Tahun'] = info_month['Tahun'].astype(str)
-    grouped_data = info_month.groupby(["Hari", "Tahun"]).agg({
+    info_month['year'] = info_month['year'].astype(str)
+    grouped_data = info_month.groupby(["Hari", "year"]).agg({
         "Harga": ["count", "sum"]
     }).reset_index()
     # Rename the columns for clarity
-    grouped_data.columns = ["Hari", "Tahun", "Jumlah_Kedatangan", "Total_Pendapatan"]
+    grouped_data.columns = ["Hari", "year", "Jumlah_Kedatangan", "Total_Pendapatan"]
     grouped_data["Total_Pendapatan"] = grouped_data["Total_Pendapatan"] / 1000000
     grouped_data['Hari'] = pd.Categorical(grouped_data['Hari'], categories=all_day, ordered=True)
     grouped_data = grouped_data.sort_values('Hari')
-    grouped_data_service = info_month.groupby(["Nama Service", "Tahun"]).agg({
+    grouped_data_service = info_month.groupby(["Nama Service", "year"]).agg({
         "Harga": ["count", "sum"]
     }).reset_index()
     
-    grouped_data_service.columns = ["Nama Service", "Tahun", "Jumlah_Kedatangan", "Total_Pendapatan"]
+    grouped_data_service.columns = ["Nama Service", "year", "Jumlah_Kedatangan", "Total_Pendapatan"]
     grouped_data_service["Total_Pendapatan"] = grouped_data_service["Total_Pendapatan"] / 1000000
     if selected_opsi == "Pendapatan":
         options_selected = "Total_Pendapatan"
@@ -280,26 +280,26 @@ def info_month(month, selected_opsi):
     grouped_data_service = grouped_data_service.sort_values(options_selected, ascending=False, ignore_index=True)
     row1 = st.columns(4)
 
-    total_pendapatan_month = round(grouped_data[grouped_data["Tahun"]=="2023"]["Total_Pendapatan"].sum(),1)
-    total_pendapatan_month_22 = round(grouped_data[grouped_data["Tahun"]=="2022"]["Total_Pendapatan"].sum(),1)
-    jumlah_kedatangan_month = round(grouped_data[grouped_data["Tahun"]=="2023"]["Jumlah_Kedatangan"].sum(),1)
-    jumlah_kedatangan_month_22 = round(grouped_data[grouped_data["Tahun"]=="2022"]["Jumlah_Kedatangan"].sum(),1)
-    top_ns_month = grouped_data_service[(grouped_data_service["Tahun"] == "2023")]["Nama Service"].tolist()[0]
-    top_tps_month = round(grouped_data_service[(grouped_data_service["Tahun"] == "2023")][options_selected].tolist()[0],1)
-    top_ns_month_22 = grouped_data_service[(grouped_data_service["Tahun"] == "2022")]["Nama Service"].tolist()[0]
-    top_tps_month_22 = round(grouped_data_service[(grouped_data_service["Tahun"] == "2022")][options_selected].tolist()[0],1)
+    total_pendapatan_month = round(grouped_data[grouped_data["year"]=="2023"]["Total_Pendapatan"].sum(),1)
+    total_pendapatan_month_22 = round(grouped_data[grouped_data["year"]=="2022"]["Total_Pendapatan"].sum(),1)
+    jumlah_kedatangan_month = round(grouped_data[grouped_data["year"]=="2023"]["Jumlah_Kedatangan"].sum(),1)
+    jumlah_kedatangan_month_22 = round(grouped_data[grouped_data["year"]=="2022"]["Jumlah_Kedatangan"].sum(),1)
+    top_ns_month = grouped_data_service[(grouped_data_service["year"] == "2023")]["Nama Service"].tolist()[0]
+    top_tps_month = round(grouped_data_service[(grouped_data_service["year"] == "2023")][options_selected].tolist()[0],1)
+    top_ns_month_22 = grouped_data_service[(grouped_data_service["year"] == "2022")]["Nama Service"].tolist()[0]
+    top_tps_month_22 = round(grouped_data_service[(grouped_data_service["year"] == "2022")][options_selected].tolist()[0],1)
     # pt => pendapatan tinggi
-    days_pt23 = ', '.join(grouped_data[grouped_data["Tahun"] == "2023"].sort_values("Total_Pendapatan")["Hari"][:3].str[:3])
-    days_pt22 = ', '.join(grouped_data[grouped_data["Tahun"] == "2022"].sort_values("Total_Pendapatan")["Hari"][:3].str[:3])
+    days_pt23 = ', '.join(grouped_data[grouped_data["year"] == "2023"].sort_values("Total_Pendapatan")["Hari"][:3].str[:3])
+    days_pt22 = ', '.join(grouped_data[grouped_data["year"] == "2022"].sort_values("Total_Pendapatan")["Hari"][:3].str[:3])
     # pr => pendapatan rendah
-    days_pr23 = ', '.join(grouped_data[grouped_data["Tahun"] == "2023"].sort_values("Total_Pendapatan", ascending=False)["Hari"][:3].str[:3])
-    days_pr22 = ', '.join(grouped_data[grouped_data["Tahun"] == "2022"].sort_values("Total_Pendapatan", ascending=False)["Hari"][:3].str[:3])
+    days_pr23 = ', '.join(grouped_data[grouped_data["year"] == "2023"].sort_values("Total_Pendapatan", ascending=False)["Hari"][:3].str[:3])
+    days_pr22 = ', '.join(grouped_data[grouped_data["year"] == "2022"].sort_values("Total_Pendapatan", ascending=False)["Hari"][:3].str[:3])
     # kt => kedatangan tinggi
-    days_kt23 = ', '.join(grouped_data[grouped_data["Tahun"] == "2023"].sort_values("Jumlah_Kedatangan")["Hari"][:3].str[:3])
-    days_kt22 = ', '.join(grouped_data[grouped_data["Tahun"] == "2022"].sort_values("Jumlah_Kedatangan")["Hari"][:3].str[:3])
+    days_kt23 = ', '.join(grouped_data[grouped_data["year"] == "2023"].sort_values("Jumlah_Kedatangan")["Hari"][:3].str[:3])
+    days_kt22 = ', '.join(grouped_data[grouped_data["year"] == "2022"].sort_values("Jumlah_Kedatangan")["Hari"][:3].str[:3])
     # kr => kedatangan rendah
-    days_kr23 = ', '.join(grouped_data[grouped_data["Tahun"] == "2023"].sort_values("Jumlah_Kedatangan", ascending=False)["Hari"][:3].str[:3])
-    days_kr22 = ', '.join(grouped_data[grouped_data["Tahun"] == "2022"].sort_values("Jumlah_Kedatangan", ascending=False)["Hari"][:3].str[:3])
+    days_kr23 = ', '.join(grouped_data[grouped_data["year"] == "2023"].sort_values("Jumlah_Kedatangan", ascending=False)["Hari"][:3].str[:3])
+    days_kr22 = ', '.join(grouped_data[grouped_data["year"] == "2022"].sort_values("Jumlah_Kedatangan", ascending=False)["Hari"][:3].str[:3])
 
     with row1[0].container():
         st.markdown(f'<span class="small-font">Total Pendapatan</span>', unsafe_allow_html=True)
@@ -354,26 +354,26 @@ def format_rupiah(angka):
 
 def distribution_q_hc_ht():
     col = st.columns([5,2.5,2.5])
-    hair_tr = df[df["Tahun"].isin([2022, 2023])]
-    hair_tr['Tahun'] = hair_tr['Tahun'].astype(str)
+    hair_tr = df[df["year"].isin([2022, 2023])]
+    hair_tr['year'] = hair_tr['year'].astype(str)
     with col[0]:
         selected_cat = st.selectbox("Pilih Treatment", ["cat rambut", "smothing"], index=0)
     hair_tr = hair_tr.loc[hair_tr['Nama Service'] == selected_cat]
-    total_pendapatan_tahunan = hair_tr.groupby('Tahun')["Harga"].sum().reset_index()
-    total_pembelian_tahunan = hair_tr.groupby('Tahun')["Harga"].count().reset_index()
-    total_pendapatan_2023 = total_pendapatan_tahunan[total_pendapatan_tahunan["Tahun"] == "2023"]["Harga"].values[0]
-    total_pendapatan_2022 = total_pendapatan_tahunan[total_pendapatan_tahunan["Tahun"] == "2022"]["Harga"].values[0]
-    total_pembelian_2023 = total_pembelian_tahunan[total_pembelian_tahunan["Tahun"]=="2023"]["Harga"].values[0]
-    total_pembelian_2022 = total_pembelian_tahunan[total_pembelian_tahunan["Tahun"] == "2022"]["Harga"].values[0]
+    total_pendapatan_yearan = hair_tr.groupby('year')["Harga"].sum().reset_index()
+    total_pembelian_yearan = hair_tr.groupby('year')["Harga"].count().reset_index()
+    total_pendapatan_2023 = total_pendapatan_yearan[total_pendapatan_yearan["year"] == "2023"]["Harga"].values[0]
+    total_pendapatan_2022 = total_pendapatan_yearan[total_pendapatan_yearan["year"] == "2022"]["Harga"].values[0]
+    total_pembelian_2023 = total_pembelian_yearan[total_pembelian_yearan["year"]=="2023"]["Harga"].values[0]
+    total_pembelian_2022 = total_pembelian_yearan[total_pembelian_yearan["year"] == "2022"]["Harga"].values[0]
     col[1].metric("Total Pendapatan",
                   value=format_rupiah(str(total_pendapatan_2023)),
                   delta=format_rupiah(str(total_pendapatan_2023-total_pendapatan_2022)))
     col[2].metric("Total Pembelian",
                   value=int(total_pembelian_2023),
                   delta=int(total_pembelian_2023-total_pembelian_2022))
-    fig = px.histogram(hair_tr, x='Harga', color='Tahun', marginal="box",text_auto=True, title=None)
+    fig = px.histogram(hair_tr, x='Harga', color='year', marginal="box",text_auto=True, title=None)
     fig.update_layout(
-        legend=dict(title=dict(text="Tahun"), orientation="h", yanchor="bottom", y=0.5, xanchor="right", x=1),
+        legend=dict(title=dict(text="year"), orientation="h", yanchor="bottom", y=0.5, xanchor="right", x=1),
         margin=dict(l=0, r=0, b=2, t=0),  # Adjust the margin
         yaxis=dict(title=dict(text="Pendapatan")),
         height=300  # Adjust the yaxis title standoff
@@ -383,21 +383,21 @@ def distribution_q_hc_ht():
 
 # main functions
 st.sidebar.header("Main Filter")
-selected_tahun = st.sidebar.multiselect("Pilih Tahun", year_option, default=[year_option[1]])
+selected_year = st.sidebar.multiselect("Pilih year", year_option, default=[year_option[1]])
 all_quarters = list(quarter_months.keys())
 selected_quarters = st.sidebar.multiselect("Pilih Quarter Bulan", all_quarters, default=all_quarters,help="Satu quarter terdapat 3 bulan (ex: Q1: Jan, Feb, Mar)")
 selected_months = []
 for quarter in selected_quarters:
     selected_months.extend(quarter_months[quarter])
 selected_opsi_ts = st.sidebar.selectbox("Pilih Opsi Untuk Sorter Data", ["Total_Pendapatan", "Jumlah_Kedatangan"])
-if not selected_tahun or not selected_months:
+if not selected_year or not selected_months:
     st.warning("Pilih minimal satu elemen untuk setiap opsi.")
     st.stop()
 month_hr = all_month + ["Idul Fitri"]
 with st.expander("Detail Report Perbulan"):
     row3 = st.columns(3)
     with row3[0]:
-        selected_year = st.selectbox("Pilih Tahun", [2022, 2023], index=1)
+        selected_year = st.selectbox("Pilih year", [2022, 2023], index=1)
     with row3[1]:
         selected_month = st.selectbox("Pilih Bulan", month_hr, index=0)
     with row3[2]:
@@ -412,12 +412,12 @@ row1 = st.columns([2.5,3.75,3.75])
 with row1[0]:
     main_info(selected_months)
 with row1[1]:
-    service_top_rank(selected_opsi_ts, selected_tahun)
+    service_top_rank(selected_opsi_ts, selected_year)
 with row1[2]:
     daily_year_trend(selected_months, selected_opsi_ts)
 st.write("---")
 row2 = st.columns([6.5,3.5])
 with row2[0]:
-    plot_trend_year(selected_tahun, selected_months, selected_opsi_ts)
+    plot_trend_year(selected_year, selected_months, selected_opsi_ts)
 with row2[1]:
     distribution_q_hc_ht()
